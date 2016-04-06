@@ -20,14 +20,14 @@
 
     <section class="main-content">
       <h1>
-<a id="erlcass" class="anchor" href="#erlcass" aria-hidden="true"><span class="octicon octicon-link"></span></a>ErlCass</h1>
+<a id="erlcass" class="anchor" href="#erlcass" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ErlCass</h1>
 
 <p><em>An Erlang Cassandra driver, based on <a href="https://github.com/datastax/cpp-driver">Datastax cpp driver</a> focused on performance.</em></p>
 
 <p>In case you want to discuss based on this project join me on <a href="https://www.wowapp.com/w/silviu/Silviu-Caragea">WowApp</a></p>
 
 <h3>
-<a id="todo-list" class="anchor" href="#todo-list" aria-hidden="true"><span class="octicon octicon-link"></span></a>TODO List:</h3>
+<a id="todo-list" class="anchor" href="#todo-list" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>TODO List:</h3>
 
 <ul>
 <li>Add support for multiple sessions</li>
@@ -43,10 +43,21 @@
 </ul>
 
 <h3>
-<a id="changelog" class="anchor" href="#changelog" aria-hidden="true"><span class="octicon octicon-link"></span></a>Changelog:</h3>
+<a id="changelog" class="anchor" href="#changelog" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Changelog:</h3>
 
 <h5>
-<a id="v22" class="anchor" href="#v22" aria-hidden="true"><span class="octicon octicon-link"></span></a>v2.2</h5>
+<a id="v23" class="anchor" href="#v23" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>v2.3</h5>
+
+<ul>
+<li>Removed the necessity of <code>gen_server</code> calls for prepared statements. Observed this as being a bottleneck under heavy load.</li>
+<li>Removed from erlcass module all methods starting with <code>uuid_*</code> and <code>date_from_epoch/1</code>, <code>time_from_epoch/1</code>, <code>date_time_to_epoch/2</code>. 
+Instead this functions you can use the one from <code>erlcass_uuid</code> and <code>erlcass_time</code> modules.</li>
+<li>Updated cpp-driver to 2.3.0</li>
+<li>Internal code refactoring</li>
+</ul>
+
+<h5>
+<a id="v22" class="anchor" href="#v22" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>v2.2</h5>
 
 <ul>
 <li>Changed the default consistency from <code>CASS_CONSISTENCY_ONE</code> to <code>CASS_CONSISTENCY_LOCAL_QUORUM</code>
@@ -55,7 +66,7 @@
 </ul>
 
 <h5>
-<a id="v21" class="anchor" href="#v21" aria-hidden="true"><span class="octicon octicon-link"></span></a>v2.1</h5>
+<a id="v21" class="anchor" href="#v21" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>v2.1</h5>
 
 <ul>
 <li>Add support for Cassandra 2.2 data types <code>tinyint</code> and <code>smallint</code>
@@ -67,7 +78,7 @@
 </ul>
 
 <h5>
-<a id="v20" class="anchor" href="#v20" aria-hidden="true"><span class="octicon octicon-link"></span></a>v2.0</h5>
+<a id="v20" class="anchor" href="#v20" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>v2.0</h5>
 
 <ul>
 <li>Added support for logs from native driver</li>
@@ -82,14 +93,14 @@
 </ul>
 
 <h5>
-<a id="v10" class="anchor" href="#v10" aria-hidden="true"><span class="octicon octicon-link"></span></a>v1.0</h5>
+<a id="v10" class="anchor" href="#v10" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>v1.0</h5>
 
 <ul>
 <li>Initial implementation supporting most of the features available in Datastax cpp-driver 1.0.3</li>
 </ul>
 
 <h3>
-<a id="getting-starting" class="anchor" href="#getting-starting" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting starting:</h3>
+<a id="getting-starting" class="anchor" href="#getting-starting" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting starting:</h3>
 
 <p><em>Usually the rebar script will install for you all dependencies on Cent OS, Ubuntu and Mac OS. So you can skip this section.</em></p>
 
@@ -130,7 +141,7 @@ sudo apt-get install g++ make cmake libuv-dev libssl-dev</pre></div>
 brew link --force openssl</pre></div>
 
 <h3>
-<a id="data-types" class="anchor" href="#data-types" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data types</h3>
+<a id="data-types" class="anchor" href="#data-types" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Data types</h3>
 
 <p>Here is a correspondence of Cassandra column types with their equivalent Erlang types</p>
 
@@ -258,16 +269,16 @@ brew link --force openssl</pre></div>
 </tbody>
 </table>
 
-<p>In order to generate a uuid v4 you can use <code>erlcass:uuid_gen_random()</code> for uuid v1 you can use <code>erlcass:uuid_gen_time()</code>.
+<p>In order to generate a uuid v4 you can use <code>erlcass_uuid:gen_random()</code> for uuid v1 you can use <code>erlcass_uuid:gen_time()</code>.
 For more details please see the section dedicated to uuid's</p>
 
 <h3>
-<a id="starting-the-application" class="anchor" href="#starting-the-application" aria-hidden="true"><span class="octicon octicon-link"></span></a>Starting the application</h3>
+<a id="starting-the-application" class="anchor" href="#starting-the-application" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Starting the application</h3>
 
 <div class="highlight highlight-source-erlang"><pre><span class="pl-en">application</span>:<span class="pl-en">start</span>(<span class="pl-c1">erlcass</span>).</pre></div>
 
 <h3>
-<a id="enable-logs-and-setting-custom-log-handler" class="anchor" href="#enable-logs-and-setting-custom-log-handler" aria-hidden="true"><span class="octicon octicon-link"></span></a>Enable logs and setting custom log handler</h3>
+<a id="enable-logs-and-setting-custom-log-handler" class="anchor" href="#enable-logs-and-setting-custom-log-handler" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Enable logs and setting custom log handler</h3>
 
 <p>Available Log levels are:</p>
 
@@ -309,7 +320,7 @@ The callback should be a function with arity 1 which will receive a record of <c
 <p>or under <code>{_Severity, Msg, Args}</code> format (for all messages generated from Erlang code)</p>
 
 <h3>
-<a id="setting-the-cluster-options" class="anchor" href="#setting-the-cluster-options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setting the cluster options</h3>
+<a id="setting-the-cluster-options" class="anchor" href="#setting-the-cluster-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setting the cluster options</h3>
 
 <div class="highlight highlight-source-erlang"><pre><span class="pl-c1">ok</span> <span class="pl-k">=</span> <span class="pl-en">erlcass</span>:<span class="pl-en">set_cluster_options</span>([
             {<span class="pl-c1">contact_points</span>,&lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>172.17.3.129<span class="pl-pds">"</span></span>&gt;&gt;},
@@ -327,7 +338,7 @@ The callback should be a function with arity 1 which will receive a record of <c
 <p>Available options:</p>
 
 <h5>
-<a id="contact_points-mandatory" class="anchor" href="#contact_points-mandatory" aria-hidden="true"><span class="octicon octicon-link"></span></a>contact_points (Mandatory)</h5>
+<a id="contact_points-mandatory" class="anchor" href="#contact_points-mandatory" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>contact_points (Mandatory)</h5>
 
 <p>Example : {contact_points, &lt;&lt;"172.17.3.129"&gt;&gt;}</p>
 
@@ -336,7 +347,7 @@ Passing an empty string will clear the contact points. White space is striped fr
 Accepted values: &lt;&lt;"127.0.0.1"&gt;&gt; &lt;&lt;"127.0.0.1,127.0.0.2"&gt;&gt;, &lt;&lt;"server1.domain.com"&gt;&gt;</p>
 
 <h5>
-<a id="port" class="anchor" href="#port" aria-hidden="true"><span class="octicon octicon-link"></span></a>port</h5>
+<a id="port" class="anchor" href="#port" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>port</h5>
 
 <p>Example: {port, 9042}</p>
 
@@ -345,7 +356,7 @@ Accepted values: &lt;&lt;"127.0.0.1"&gt;&gt; &lt;&lt;"127.0.0.1,127.0.0.2"&gt;&g
 <p>Default: 9042</p>
 
 <h5>
-<a id="ssl" class="anchor" href="#ssl" aria-hidden="true"><span class="octicon octicon-link"></span></a>ssl</h5>
+<a id="ssl" class="anchor" href="#ssl" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ssl</h5>
 
 <p>Example:</p>
 
@@ -362,7 +373,7 @@ Accepted values: &lt;&lt;"127.0.0.1"&gt;&gt; &lt;&lt;"127.0.0.1,127.0.0.2"&gt;&g
 <p>Default: None</p>
 
 <h6>
-<a id="params" class="anchor" href="#params" aria-hidden="true"><span class="octicon octicon-link"></span></a>Params:</h6>
+<a id="params" class="anchor" href="#params" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Params:</h6>
 
 <div class="highlight highlight-source-erlang"><pre>{<span class="pl-c1">ssl</span>, [
         {<span class="pl-c1">trusted_certs</span>, <span class="pl-smi">CertsList</span><span class="pl-k">::</span><span class="pl-en">list</span>()},
@@ -403,7 +414,7 @@ Accepted values: &lt;&lt;"127.0.0.1"&gt;&gt; &lt;&lt;"127.0.0.1,127.0.0.2"&gt;&g
 <p>Default: <code>CASS_SSL_VERIFY_PEER_CERT</code></p>
 
 <h5>
-<a id="protocol_version" class="anchor" href="#protocol_version" aria-hidden="true"><span class="octicon octicon-link"></span></a>protocol_version</h5>
+<a id="protocol_version" class="anchor" href="#protocol_version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>protocol_version</h5>
 
 <p>Example: {protocol_version, 2}</p>
 
@@ -412,7 +423,7 @@ Accepted values: &lt;&lt;"127.0.0.1"&gt;&gt; &lt;&lt;"127.0.0.1,127.0.0.2"&gt;&g
 <p>Default: 4</p>
 
 <h5>
-<a id="number_threads_io" class="anchor" href="#number_threads_io" aria-hidden="true"><span class="octicon octicon-link"></span></a>number_threads_io</h5>
+<a id="number_threads_io" class="anchor" href="#number_threads_io" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>number_threads_io</h5>
 
 <p>Example: {number_threads_io, 1}</p>
 
@@ -421,7 +432,7 @@ Accepted values: &lt;&lt;"127.0.0.1"&gt;&gt; &lt;&lt;"127.0.0.1,127.0.0.2"&gt;&g
 <p>Default: 1</p>
 
 <h5>
-<a id="queue_size_io" class="anchor" href="#queue_size_io" aria-hidden="true"><span class="octicon octicon-link"></span></a>queue_size_io</h5>
+<a id="queue_size_io" class="anchor" href="#queue_size_io" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>queue_size_io</h5>
 
 <p>Example: {queue_size_io, 8192}</p>
 
@@ -430,7 +441,7 @@ Accepted values: &lt;&lt;"127.0.0.1"&gt;&gt; &lt;&lt;"127.0.0.1,127.0.0.2"&gt;&g
 <p>Default: 8192</p>
 
 <h5>
-<a id="queue_size_event" class="anchor" href="#queue_size_event" aria-hidden="true"><span class="octicon octicon-link"></span></a>queue_size_event</h5>
+<a id="queue_size_event" class="anchor" href="#queue_size_event" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>queue_size_event</h5>
 
 <p>Example: {queue_size_event, 8192}</p>
 
@@ -439,7 +450,7 @@ Accepted values: &lt;&lt;"127.0.0.1"&gt;&gt; &lt;&lt;"127.0.0.1,127.0.0.2"&gt;&g
 <p>Default: 8192</p>
 
 <h5>
-<a id="core_connections_host" class="anchor" href="#core_connections_host" aria-hidden="true"><span class="octicon octicon-link"></span></a>core_connections_host</h5>
+<a id="core_connections_host" class="anchor" href="#core_connections_host" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>core_connections_host</h5>
 
 <p>Example: {core_connections_host, 1}</p>
 
@@ -448,7 +459,7 @@ Accepted values: &lt;&lt;"127.0.0.1"&gt;&gt; &lt;&lt;"127.0.0.1,127.0.0.2"&gt;&g
 <p>Default: 1</p>
 
 <h5>
-<a id="max_connections_host" class="anchor" href="#max_connections_host" aria-hidden="true"><span class="octicon octicon-link"></span></a>max_connections_host</h5>
+<a id="max_connections_host" class="anchor" href="#max_connections_host" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>max_connections_host</h5>
 
 <p>Example: {max_connections_host, 2}</p>
 
@@ -457,7 +468,7 @@ Accepted values: &lt;&lt;"127.0.0.1"&gt;&gt; &lt;&lt;"127.0.0.1,127.0.0.2"&gt;&g
 <p>Default: 2</p>
 
 <h5>
-<a id="reconnect_wait_time" class="anchor" href="#reconnect_wait_time" aria-hidden="true"><span class="octicon octicon-link"></span></a>reconnect_wait_time</h5>
+<a id="reconnect_wait_time" class="anchor" href="#reconnect_wait_time" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>reconnect_wait_time</h5>
 
 <p>Example: {reconnect_wait_time, 2000}</p>
 
@@ -466,7 +477,7 @@ Accepted values: &lt;&lt;"127.0.0.1"&gt;&gt; &lt;&lt;"127.0.0.1,127.0.0.2"&gt;&g
 <p>Default: 2000 milliseconds</p>
 
 <h5>
-<a id="max_concurrent_creation" class="anchor" href="#max_concurrent_creation" aria-hidden="true"><span class="octicon octicon-link"></span></a>max_concurrent_creation</h5>
+<a id="max_concurrent_creation" class="anchor" href="#max_concurrent_creation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>max_concurrent_creation</h5>
 
 <p>Example: {max_concurrent_creation, 1}</p>
 
@@ -476,7 +487,7 @@ Connections are created when the current connections are unable to keep up with 
 <p>Default: 1</p>
 
 <h5>
-<a id="max_requests_threshold" class="anchor" href="#max_requests_threshold" aria-hidden="true"><span class="octicon octicon-link"></span></a>max_requests_threshold</h5>
+<a id="max_requests_threshold" class="anchor" href="#max_requests_threshold" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>max_requests_threshold</h5>
 
 <p>Example: {max_requests_threshold, 100}</p>
 
@@ -486,7 +497,7 @@ The number of new connections created will not exceed max_connections_host.</p>
 <p>Default: 100</p>
 
 <h5>
-<a id="requests_per_flush" class="anchor" href="#requests_per_flush" aria-hidden="true"><span class="octicon octicon-link"></span></a>requests_per_flush</h5>
+<a id="requests_per_flush" class="anchor" href="#requests_per_flush" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>requests_per_flush</h5>
 
 <p>Example: {requests_per_flush, 128}</p>
 
@@ -495,7 +506,7 @@ The number of new connections created will not exceed max_connections_host.</p>
 <p>Default: 128</p>
 
 <h5>
-<a id="write_bytes_high_watermark" class="anchor" href="#write_bytes_high_watermark" aria-hidden="true"><span class="octicon octicon-link"></span></a>write_bytes_high_watermark</h5>
+<a id="write_bytes_high_watermark" class="anchor" href="#write_bytes_high_watermark" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>write_bytes_high_watermark</h5>
 
 <p>Example: {write_bytes_high_watermark, 65536}</p>
 
@@ -505,7 +516,7 @@ Disables writes to a connection if the number of bytes queued exceed this value.
 <p>Default: 64 KB</p>
 
 <h5>
-<a id="write_bytes_low_watermark" class="anchor" href="#write_bytes_low_watermark" aria-hidden="true"><span class="octicon octicon-link"></span></a>write_bytes_low_watermark</h5>
+<a id="write_bytes_low_watermark" class="anchor" href="#write_bytes_low_watermark" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>write_bytes_low_watermark</h5>
 
 <p>Example: {write_bytes_low_watermark, 32768}</p>
 
@@ -515,7 +526,7 @@ After exceeding high water mark bytes, writes will only resume once the number o
 <p>Default: 32 KB</p>
 
 <h5>
-<a id="pending_requests_high_watermark" class="anchor" href="#pending_requests_high_watermark" aria-hidden="true"><span class="octicon octicon-link"></span></a>pending_requests_high_watermark</h5>
+<a id="pending_requests_high_watermark" class="anchor" href="#pending_requests_high_watermark" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>pending_requests_high_watermark</h5>
 
 <p>Example: {pending_requests_high_watermark, 256}</p>
 
@@ -525,7 +536,7 @@ Disables writes to a host on an IO worker if the number of requests queued excee
 <p>Default: 256</p>
 
 <h5>
-<a id="pending_requests_low_watermark" class="anchor" href="#pending_requests_low_watermark" aria-hidden="true"><span class="octicon octicon-link"></span></a>pending_requests_low_watermark</h5>
+<a id="pending_requests_low_watermark" class="anchor" href="#pending_requests_low_watermark" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>pending_requests_low_watermark</h5>
 
 <p>Example: {pending_requests_low_watermark, 128}</p>
 
@@ -535,7 +546,7 @@ After exceeding high water mark requests, writes to a host will only resume once
 <p>Default: 128</p>
 
 <h5>
-<a id="connect_timeout" class="anchor" href="#connect_timeout" aria-hidden="true"><span class="octicon octicon-link"></span></a>connect_timeout</h5>
+<a id="connect_timeout" class="anchor" href="#connect_timeout" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>connect_timeout</h5>
 
 <p>Example: {connect_timeout, 5000}</p>
 
@@ -544,7 +555,7 @@ After exceeding high water mark requests, writes to a host will only resume once
 <p>Default: 5000 milliseconds</p>
 
 <h5>
-<a id="heartbeat_interval" class="anchor" href="#heartbeat_interval" aria-hidden="true"><span class="octicon octicon-link"></span></a>heartbeat_interval</h5>
+<a id="heartbeat_interval" class="anchor" href="#heartbeat_interval" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>heartbeat_interval</h5>
 
 <p>Example: {heartbeat_interval, 30}</p>
 
@@ -554,7 +565,7 @@ This is useful for preventing intermediate network devices from dropping connect
 <p>Default: 30 seconds</p>
 
 <h5>
-<a id="idle_timeout" class="anchor" href="#idle_timeout" aria-hidden="true"><span class="octicon octicon-link"></span></a>idle_timeout</h5>
+<a id="idle_timeout" class="anchor" href="#idle_timeout" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>idle_timeout</h5>
 
 <p>Example: {idle_timeout, 60}</p>
 
@@ -563,7 +574,7 @@ This is useful for preventing intermediate network devices from dropping connect
 <p>Default: 60 seconds</p>
 
 <h5>
-<a id="request_timeout" class="anchor" href="#request_timeout" aria-hidden="true"><span class="octicon octicon-link"></span></a>request_timeout</h5>
+<a id="request_timeout" class="anchor" href="#request_timeout" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>request_timeout</h5>
 
 <p>Example: {request_timeout, 12000}</p>
 
@@ -572,14 +583,14 @@ This is useful for preventing intermediate network devices from dropping connect
 <p>Default: 12000 milliseconds</p>
 
 <h5>
-<a id="credentials" class="anchor" href="#credentials" aria-hidden="true"><span class="octicon octicon-link"></span></a>credentials</h5>
+<a id="credentials" class="anchor" href="#credentials" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>credentials</h5>
 
 <p>Example: {credentials, {&lt;&lt;"username"&gt;&gt;, &lt;&lt;"password"&gt;&gt;}}</p>
 
 <p>Sets credentials for plain text authentication.</p>
 
 <h5>
-<a id="load_balance_round_robin" class="anchor" href="#load_balance_round_robin" aria-hidden="true"><span class="octicon octicon-link"></span></a>load_balance_round_robin</h5>
+<a id="load_balance_round_robin" class="anchor" href="#load_balance_round_robin" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>load_balance_round_robin</h5>
 
 <p>Example: {load_balance_round_robin, true}</p>
 
@@ -587,7 +598,7 @@ This is useful for preventing intermediate network devices from dropping connect
 The driver discovers all nodes in a cluster and cycles through them per request. All are considered 'local'.</p>
 
 <h5>
-<a id="load_balance_dc_aware" class="anchor" href="#load_balance_dc_aware" aria-hidden="true"><span class="octicon octicon-link"></span></a>load_balance_dc_aware</h5>
+<a id="load_balance_dc_aware" class="anchor" href="#load_balance_dc_aware" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>load_balance_dc_aware</h5>
 
 <p>Example: {load_balance_dc_aware, {"dc_name", 2, true}}</p>
 
@@ -595,14 +606,14 @@ The driver discovers all nodes in a cluster and cycles through them per request.
 For each query, all live nodes in a primary 'local' DC are tried first, followed by any node from other DCs.</p>
 
 <h6>
-<a id="note" class="anchor" href="#note" aria-hidden="true"><span class="octicon octicon-link"></span></a>Note:</h6>
+<a id="note" class="anchor" href="#note" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Note:</h6>
 
 <p>This is the default, and does not need to be called unless switching an existing from another policy or changing settings.
 Without further configuration, a default local_dc is chosen from the first connected contact point, and no remote hosts are considered in query plans.
 If relying on this mechanism, be sure to use only contact points from the local DC.</p>
 
 <h6>
-<a id="params-1" class="anchor" href="#params-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Params:</h6>
+<a id="params-1" class="anchor" href="#params-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Params:</h6>
 
 <p><em>{load_balance_dc_aware, {LocalDc, UsedHostsPerRemoteDc, AllowRemoteDcsForLocalCl}}</em></p>
 
@@ -613,7 +624,7 @@ If relying on this mechanism, be sure to use only contact points from the local 
 </ul>
 
 <h5>
-<a id="token_aware_routing" class="anchor" href="#token_aware_routing" aria-hidden="true"><span class="octicon octicon-link"></span></a>token_aware_routing</h5>
+<a id="token_aware_routing" class="anchor" href="#token_aware_routing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>token_aware_routing</h5>
 
 <p>Example: {token_aware_routing, true}</p>
 
@@ -623,7 +634,7 @@ This routing policy composes the base routing policy, routing requests first to 
 <p>Default is true (enabled).</p>
 
 <h4>
-<a id="latency_aware_routing" class="anchor" href="#latency_aware_routing" aria-hidden="true"><span class="octicon octicon-link"></span></a>latency_aware_routing</h4>
+<a id="latency_aware_routing" class="anchor" href="#latency_aware_routing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>latency_aware_routing</h4>
 
 <p>Example:</p>
 
@@ -637,7 +648,7 @@ This routing policy is a top-level routing policy.
 It uses the base routing policy to determine locality (dc-aware) and/or placement (token-aware) before considering the latency.</p>
 
 <h6>
-<a id="params-2" class="anchor" href="#params-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Params:</h6>
+<a id="params-2" class="anchor" href="#params-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Params:</h6>
 
 <p>{Enabled, {ExclusionThreshold, ScaleMs, RetryPeriodMs, UpdateRateMs, MinMeasured}}</p>
 
@@ -653,10 +664,10 @@ It uses the base routing policy to determine locality (dc-aware) and/or placemen
 <p>Defaults: {false, {2.0, 100, 10000, 100 , 50}}</p>
 
 <h6>
-<a id="note-in-case-you-use-only-true-false-atom-the-tuning-settings-will-not-change" class="anchor" href="#note-in-case-you-use-only-true-false-atom-the-tuning-settings-will-not-change" aria-hidden="true"><span class="octicon octicon-link"></span></a>Note: In case you use only true false atom the tuning settings will not change.</h6>
+<a id="note-in-case-you-use-only-true-false-atom-the-tuning-settings-will-not-change" class="anchor" href="#note-in-case-you-use-only-true-false-atom-the-tuning-settings-will-not-change" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Note: In case you use only true false atom the tuning settings will not change.</h6>
 
 <h5>
-<a id="tcp_nodelay" class="anchor" href="#tcp_nodelay" aria-hidden="true"><span class="octicon octicon-link"></span></a>tcp_nodelay</h5>
+<a id="tcp_nodelay" class="anchor" href="#tcp_nodelay" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>tcp_nodelay</h5>
 
 <p>Example: {tcp_nodelay, false}</p>
 
@@ -665,7 +676,7 @@ It uses the base routing policy to determine locality (dc-aware) and/or placemen
 <p>Default: true (disabled).</p>
 
 <h5>
-<a id="tcp_keepalive" class="anchor" href="#tcp_keepalive" aria-hidden="true"><span class="octicon octicon-link"></span></a>tcp_keepalive</h5>
+<a id="tcp_keepalive" class="anchor" href="#tcp_keepalive" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>tcp_keepalive</h5>
 
 <p>Example: {tcp_keepalive, {true, 60}}</p>
 
@@ -674,7 +685,7 @@ It uses the base routing policy to determine locality (dc-aware) and/or placemen
 <p>Default: cass_false (disabled).</p>
 
 <h5>
-<a id="default_consistency_level" class="anchor" href="#default_consistency_level" aria-hidden="true"><span class="octicon octicon-link"></span></a>default_consistency_level</h5>
+<a id="default_consistency_level" class="anchor" href="#default_consistency_level" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>default_consistency_level</h5>
 
 <p>Example: {default_consistency_level, ?CASS_CONSISTENCY_LOCAL_QUORUM}</p>
 
@@ -683,7 +694,7 @@ It uses the base routing policy to determine locality (dc-aware) and/or placemen
 <p>Default: ?CASS_CONSISTENCY_LOCAL_QUORUM</p>
 
 <h3>
-<a id="creating-a-session" class="anchor" href="#creating-a-session" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating a session</h3>
+<a id="creating-a-session" class="anchor" href="#creating-a-session" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating a session</h3>
 
 <p><em>Currently this is limited to one session per application. This is a Datastax recommendations as well</em></p>
 
@@ -698,7 +709,7 @@ It uses the base routing policy to determine locality (dc-aware) and/or placemen
 <div class="highlight highlight-source-erlang"><pre><span class="pl-c1">ok</span> <span class="pl-k">=</span> <span class="pl-en">erlcass</span>:<span class="pl-en">create_session</span>([{<span class="pl-c1">keyspace</span>, &lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>stresscql<span class="pl-pds">"</span></span>&gt;&gt;}]).</pre></div>
 
 <h3>
-<a id="add-a-prepare-statement" class="anchor" href="#add-a-prepare-statement" aria-hidden="true"><span class="octicon octicon-link"></span></a>Add a prepare statement</h3>
+<a id="add-a-prepare-statement" class="anchor" href="#add-a-prepare-statement" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Add a prepare statement</h3>
 
 <p>Example:</p>
 
@@ -714,7 +725,7 @@ It uses the base routing policy to determine locality (dc-aware) and/or placemen
                 { &lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>select * from blogposts where domain = ? LIMIT 1<span class="pl-pds">"</span></span>&gt;&gt;, <span class="pl-k">?</span><span class="pl-en">CASS_CONSISTENCY_LOCAL_QUORUM</span> }).</pre></div>
 
 <h3>
-<a id="run-a-prepared-statement-query" class="anchor" href="#run-a-prepared-statement-query" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run a prepared statement query</h3>
+<a id="run-a-prepared-statement-query" class="anchor" href="#run-a-prepared-statement-query" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Run a prepared statement query</h3>
 
 <p>In case the first parameter for <em>erlcass:execute</em> is an atom then the driver will try to find the associated prepared statement and to run it.
 You can bind the parameters in 2 ways: by name and by index. You can use <code>?BIND_BY_INDEX</code> and <code>?BIND_BY_NAME</code> from execute/3 in order to specify the desired method. By default is binding by index</p>
@@ -738,7 +749,7 @@ You can bind the parameters in 2 ways: by name and by index. You can use <code>?
 <span class="pl-en">erlcass</span>:<span class="pl-en">execute</span>(<span class="pl-c1">insert_test_bind</span>, <span class="pl-k">?</span><span class="pl-en">BIND_BY_NAME</span>, [{&lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>key(value)<span class="pl-pds">"</span></span>&gt;&gt;, <span class="pl-smi">CollectionIndex1</span>}, {&lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>value(value)<span class="pl-pds">"</span></span>&gt;&gt;, <span class="pl-smi">CollectionValue1</span>}, {&lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>key<span class="pl-pds">"</span></span>&gt;&gt;, <span class="pl-smi">Key1</span>}]),</pre></div>
 
 <h3>
-<a id="async-queries-and-blocking-queries" class="anchor" href="#async-queries-and-blocking-queries" aria-hidden="true"><span class="octicon octicon-link"></span></a>Async queries and blocking queries</h3>
+<a id="async-queries-and-blocking-queries" class="anchor" href="#async-queries-and-blocking-queries" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Async queries and blocking queries</h3>
 
 <p>For blocking operations use <em>erlcass:execute</em>, for async execution use : <em>erlcass:async_execute</em>.
 The blocking operation will block the current erlang process (still async into the native code in order to avoid freezing of the VM threads) until will get the result from the cluster.</p>
@@ -754,7 +765,7 @@ The blocking operation will block the current erlang process (still async into t
     <span class="pl-k">end</span>.</pre></div>
 
 <h3>
-<a id="non-prepared-statements-queries" class="anchor" href="#non-prepared-statements-queries" aria-hidden="true"><span class="octicon octicon-link"></span></a>Non prepared statements queries</h3>
+<a id="non-prepared-statements-queries" class="anchor" href="#non-prepared-statements-queries" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Non prepared statements queries</h3>
 
 <p>The only downside is that you have to provide metadata about the types of the fields that are bound.
 The datatypes can be found into <em>erlcass.hrl</em> file as follow:</p>
@@ -788,7 +799,7 @@ Example with binding by index (requires metadata parsing all the time so it migh
 <div class="highlight highlight-source-erlang"><pre><span class="pl-en">erlcass</span>:<span class="pl-en">execute</span>(&lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>select * from blogposts where domain = 'Domain_1' LIMIT 1<span class="pl-pds">"</span></span>&gt;&gt;).</pre></div>
 
 <h3>
-<a id="batched-queries" class="anchor" href="#batched-queries" aria-hidden="true"><span class="octicon octicon-link"></span></a>Batched queries</h3>
+<a id="batched-queries" class="anchor" href="#batched-queries" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Batched queries</h3>
 
 <p>In order to perform batched statements you can use <code>erlcass:batch_async_execute/3</code> or <code>erlcass:batch_execute/3</code>.</p>
 
@@ -813,44 +824,44 @@ executed using the default consistency level value.</p>
 {<span class="pl-c1">ok</span>, []} <span class="pl-k">=</span> <span class="pl-en">erlcass</span>:<span class="pl-en">batch_execute</span>(<span class="pl-k">?</span><span class="pl-en">CASS_BATCH_TYPE_LOGGED</span>, [<span class="pl-smi">Stm1</span>, <span class="pl-smi">Stm2</span>], [{<span class="pl-c1">consistency_level</span>, <span class="pl-k">?</span><span class="pl-en">CASS_CONSISTENCY_QUORUM</span>}]).</pre></div>
 
 <h3>
-<a id="working-with-uuid-or-timeuuid-fields" class="anchor" href="#working-with-uuid-or-timeuuid-fields" aria-hidden="true"><span class="octicon octicon-link"></span></a>Working with uuid or timeuuid fields:</h3>
+<a id="working-with-uuid-or-timeuuid-fields" class="anchor" href="#working-with-uuid-or-timeuuid-fields" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Working with uuid or timeuuid fields:</h3>
 
 <ul>
 <li>
-<code>erlcass:uuid_gen_time()</code>   -&gt; Generates a V1 (time) UUID</li>
+<code>erlcass_uuid:gen_time()</code>   -&gt; Generates a V1 (time) UUID</li>
 <li>
-<code>erlcass:uuid_gen_random()</code> -&gt; Generates a new V4 (random) UUID</li>
+<code>erlcass_uuid:gen_random()</code> -&gt; Generates a new V4 (random) UUID</li>
 <li>
-<code>erlcass:uuid_gen_from_ts(Ts)</code> -&gt; Generates a V1 (time) UUID for the specified timestamp</li>
+<code>erlcass_uuid:gen_from_ts(Ts)</code> -&gt; Generates a V1 (time) UUID for the specified timestamp</li>
 <li>
-<code>erlcass:uuid_min_from_ts(Ts)</code> -&gt; Sets the UUID to the minimum V1 (time) value for the specified timestamp,</li>
+<code>erlcass_uuid:min_from_ts(Ts)</code> -&gt; Sets the UUID to the minimum V1 (time) value for the specified timestamp,</li>
 <li>
-<code>erlcass:uuid_max_from_ts(Ts)</code> -&gt; Sets the UUID to the maximum V1 (time) value for the specified timestamp,</li>
+<code>erlcass_uuid:max_from_ts(Ts)</code> -&gt; Sets the UUID to the maximum V1 (time) value for the specified timestamp,</li>
 <li>
-<code>erlcass:uuid_get_ts(Uuid)</code> -&gt; Gets the timestamp for a V1 UUID,</li>
+<code>erlcass_uuid:get_ts(Uuid)</code> -&gt; Gets the timestamp for a V1 UUID,</li>
 <li>
-<code>erlcass:uuid_get_version(Uuid)</code> -&gt; Gets the version for a UUID (V1 or V4)</li>
+<code>erlcass_uuid:get_version(Uuid)</code> -&gt; Gets the version for a UUID (V1 or V4)</li>
 </ul>
 
 <h3>
-<a id="working-with-date-time-fields" class="anchor" href="#working-with-date-time-fields" aria-hidden="true"><span class="octicon octicon-link"></span></a>Working with date, time fields:</h3>
+<a id="working-with-date-time-fields" class="anchor" href="#working-with-date-time-fields" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Working with date, time fields:</h3>
 
 <ul>
 <li>
-<code>erlcass:date_from_epoch(EpochSecs)</code> -&gt; Converts a unix timestamp (in seconds) to the Cassandra <code>date</code> type. The <code>date</code> type represents the number of days since the Epoch (1970-01-01) with the Epoch centered at the value 2^31.</li>
+<code>erlcass_time:date_from_epoch(EpochSecs)</code> -&gt; Converts a unix timestamp (in seconds) to the Cassandra <code>date</code> type. The <code>date</code> type represents the number of days since the Epoch (1970-01-01) with the Epoch centered at the value 2^31.</li>
 <li>
-<code>erlcass:time_from_epoch(EpochSecs)</code> -&gt; Converts a unix timestamp (in seconds) to the Cassandra <code>time</code> type. The <code>time</code> type represents the number of nanoseconds since midnight (range 0 to 86399999999999).</li>
+<code>erlcass_time:time_from_epoch(EpochSecs)</code> -&gt; Converts a unix timestamp (in seconds) to the Cassandra <code>time</code> type. The <code>time</code> type represents the number of nanoseconds since midnight (range 0 to 86399999999999).</li>
 <li>
-<code>erlcass:date_time_to_epoch(Date, Time)</code> -&gt; Combines the Cassandra <code>date</code> and <code>time</code> types to Epoch time in seconds. Returns Epoch time in seconds. Negative times are possible if the date occurs before the Epoch (1970-1-1).</li>
+<code>erlcass_time:date_time_to_epoch(Date, Time)</code> -&gt; Combines the Cassandra <code>date</code> and <code>time</code> types to Epoch time in seconds. Returns Epoch time in seconds. Negative times are possible if the date occurs before the Epoch (1970-1-1).</li>
 </ul>
 
 <h3>
-<a id="getting-metrics" class="anchor" href="#getting-metrics" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting metrics</h3>
+<a id="getting-metrics" class="anchor" href="#getting-metrics" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting metrics</h3>
 
 <p>In order to get metrics from the native driver you can use <code>erlcass:get_metrics().</code></p>
 
 <h5>
-<a id="requests" class="anchor" href="#requests" aria-hidden="true"><span class="octicon octicon-link"></span></a>requests</h5>
+<a id="requests" class="anchor" href="#requests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>requests</h5>
 
 <ul>
 <li>
@@ -884,7 +895,7 @@ executed using the default consistency level value.</p>
 </ul>
 
 <h5>
-<a id="stats" class="anchor" href="#stats" aria-hidden="true"><span class="octicon octicon-link"></span></a>stats</h5>
+<a id="stats" class="anchor" href="#stats" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>stats</h5>
 
 <ul>
 <li>
@@ -898,7 +909,7 @@ executed using the default consistency level value.</p>
 </ul>
 
 <h5>
-<a id="errors" class="anchor" href="#errors" aria-hidden="true"><span class="octicon octicon-link"></span></a>errors</h5>
+<a id="errors" class="anchor" href="#errors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>errors</h5>
 
 <ul>
 <li>
@@ -910,24 +921,24 @@ executed using the default consistency level value.</p>
 </ul>
 
 <h3>
-<a id="low-level-methods" class="anchor" href="#low-level-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>Low level methods</h3>
+<a id="low-level-methods" class="anchor" href="#low-level-methods" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Low level methods</h3>
 
 <p>Each query requires an internal statement (prepared or not). You can reuse the same statement object for multiple queries
 performed in the same process.</p>
 
 <h5>
-<a id="getting-a-statement-reference-for-a-prepared-statement-query" class="anchor" href="#getting-a-statement-reference-for-a-prepared-statement-query" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting a statement reference for a prepared statement query</h5>
+<a id="getting-a-statement-reference-for-a-prepared-statement-query" class="anchor" href="#getting-a-statement-reference-for-a-prepared-statement-query" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting a statement reference for a prepared statement query</h5>
 
 <div class="highlight highlight-source-erlang"><pre>{<span class="pl-c1">ok</span>, <span class="pl-smi">Statement</span>} <span class="pl-k">=</span> <span class="pl-en">erlcass</span>:<span class="pl-en">bind_prepared_statement</span>(<span class="pl-c1">select_blogpost</span>).</pre></div>
 
 <h5>
-<a id="getting-a-statement-reference-for-a-non-prepared-query" class="anchor" href="#getting-a-statement-reference-for-a-non-prepared-query" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting a statement reference for a non prepared query</h5>
+<a id="getting-a-statement-reference-for-a-non-prepared-query" class="anchor" href="#getting-a-statement-reference-for-a-non-prepared-query" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting a statement reference for a non prepared query</h5>
 
 <div class="highlight highlight-source-erlang"><pre>{<span class="pl-c1">ok</span>, <span class="pl-smi">Statement</span>} <span class="pl-k">=</span> <span class="pl-en">erlcass</span>:<span class="pl-en">create_statement</span>(&lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>select * from blogposts where domain = ? LIMIT 1<span class="pl-pds">"</span></span>&gt;&gt;,
                                            [{<span class="pl-k">?</span><span class="pl-en">CASS_TEXT</span>, &lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>Domain_1<span class="pl-pds">"</span></span>&gt;&gt;}]).</pre></div>
 
 <h5>
-<a id="bind-the-values-for-a-prepared-statement-before-executing" class="anchor" href="#bind-the-values-for-a-prepared-statement-before-executing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bind the values for a prepared statement before executing</h5>
+<a id="bind-the-values-for-a-prepared-statement-before-executing" class="anchor" href="#bind-the-values-for-a-prepared-statement-before-executing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bind the values for a prepared statement before executing</h5>
 
 <div class="highlight highlight-source-erlang"><pre><span class="pl-c">%bind by name</span>
 <span class="pl-c1">ok</span> <span class="pl-k">=</span> <span class="pl-en">erlcass</span>:<span class="pl-en">bind_prepared_params_by_name</span>(<span class="pl-c1">select_blogpost</span>, [{&lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>domain<span class="pl-pds">"</span></span>&gt;&gt;, &lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>Domain_1<span class="pl-pds">"</span></span>&gt;&gt;}]);
@@ -937,12 +948,12 @@ performed in the same process.</p>
 <p>For mode details about bind by index and name please see: 'Run a prepared statement query' section</p>
 
 <h5>
-<a id="execute-a-statement-async" class="anchor" href="#execute-a-statement-async" aria-hidden="true"><span class="octicon octicon-link"></span></a>Execute a statement async</h5>
+<a id="execute-a-statement-async" class="anchor" href="#execute-a-statement-async" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Execute a statement async</h5>
 
 <div class="highlight highlight-source-erlang"><pre>{<span class="pl-c1">ok</span>, <span class="pl-smi">Tag</span>} <span class="pl-k">=</span> <span class="pl-en">erlcass</span>:<span class="pl-en">async_execute_statement</span>(<span class="pl-smi">Statement</span>).</pre></div>
 
 <h5>
-<a id="execute-a-statement-in-blocking-mode" class="anchor" href="#execute-a-statement-in-blocking-mode" aria-hidden="true"><span class="octicon octicon-link"></span></a>Execute a statement in blocking mode</h5>
+<a id="execute-a-statement-in-blocking-mode" class="anchor" href="#execute-a-statement-in-blocking-mode" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Execute a statement in blocking mode</h5>
 
 <div class="highlight highlight-source-erlang"><pre><span class="pl-smi">Result</span> <span class="pl-k">=</span> <span class="pl-en">erlcass</span>:<span class="pl-en">execute_statement</span>(<span class="pl-smi">Statement</span>).</pre></div>
 
