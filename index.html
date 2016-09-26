@@ -1,288 +1,66 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <title>ErlCass by silviucpp</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <title>ErlCass by silviucpp</title>
   </head>
-
   <body>
-    <div id="container">
-      <div class="inner">
+    <div class="wrapper">
+      <header>
+        <h1>ErlCass</h1>
+        <p>An Erlang Cassandra driver, based on Datastax cpp driver focused on performance.</p>
 
-        <header>
-          <h1>ErlCass</h1>
-          <h2>An Erlang Cassandra driver, based on Datastax cpp driver focused on performance.</h2>
-        </header>
+        <p class="view"><a href="https://github.com/silviucpp/erlcass">View the Project on GitHub <small>silviucpp/erlcass</small></a></p>
 
-        <section id="downloads" class="clearfix">
-          <a href="https://github.com/silviucpp/erlcass/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/silviucpp/erlcass/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/silviucpp/erlcass" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section>
 
-        <hr>
-
-        <section id="main_content">
-          <h1>
+        <ul>
+          <li><a href="https://github.com/silviucpp/erlcass/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/silviucpp/erlcass/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/silviucpp/erlcass">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
 <a id="erlcass" class="anchor" href="#erlcass" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ErlCass</h1>
 
-<p><em>An Erlang Cassandra driver, based on <a href="https://github.com/datastax/cpp-driver">Datastax cpp driver</a> focused on performance.</em></p>
-
-<p>In case you want to discuss based on this project join me on <a href="https://www.wowapp.com/w/silviu/Silviu-Caragea">WowApp</a></p>
+<p><em>An Erlang Cassandra driver, based on <a href="https://github.com/datastax/cpp-driver">DataStax cpp driver</a> focused on performance.</em></p>
 
 <h3>
-<a id="todo-list" class="anchor" href="#todo-list" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>TODO List:</h3>
+<a id="implementation-note" class="anchor" href="#implementation-note" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Implementation note</h3>
 
-<ul>
-<li>Add support for multiple sessions</li>
-<li>Add support for setting serial consistency,</li>
-<li>Add support for pagination,</li>
-<li>Add support for UDT</li>
-<li>Add support for sending and relieving custom payloads to and from Cassandra</li>
-<li>Add support for server-side warnings</li>
-<li>Add support for retry policies settings</li>
-<li>Add support for client-side timestamps settings</li>
-<li>Add support for Sets/Appends whitelist hosts</li>
-<li>Add support for schema metadata API</li>
-</ul>
+<h4>
+<a id="how-erlcass-affects-the-erlang-schedulers" class="anchor" href="#how-erlcass-affects-the-erlang-schedulers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How ErlCass affects the Erlang schedulers</h4>
 
-<h3>
-<a id="changelog" class="anchor" href="#changelog" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Changelog:</h3>
+<p>It's well known that NIF's can affect the Erlang schedulers performances in case the functions are not returning in less than 1-2 ms and blocks the threads. </p>
 
-<h5>
-<a id="v23" class="anchor" href="#v23" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>v2.3</h5>
+<p>Because the DataStax cpp driver is async, <code>ErlCass</code> won't block the scheduler threads and all calls to the native functions will return immediately.
+The DataStax driver use it's own threads for managing the requests. Also the responses are received on this threads and sent back to Erlang calling process using <code>enif_send</code> in a async manner. </p>
 
-<ul>
-<li>Removed the necessity of <code>gen_server</code> calls for prepared statements. Observed this as being a bottleneck under heavy load.</li>
-<li>Removed from erlcass module all methods starting with <code>uuid_*</code> and <code>date_from_epoch/1</code>, <code>time_from_epoch/1</code>, <code>date_time_to_epoch/2</code>. 
-Instead this functions you can use the one from <code>erlcass_uuid</code> and <code>erlcass_time</code> modules.</li>
-<li>Updated cpp-driver to 2.3.0</li>
-<li>Internal code refactoring</li>
-</ul>
+<h4>
+<a id="changelog" class="anchor" href="#changelog" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Changelog</h4>
 
-<h5>
-<a id="v22" class="anchor" href="#v22" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>v2.2</h5>
-
-<ul>
-<li>Changed the default consistency from <code>CASS_CONSISTENCY_ONE</code> to <code>CASS_CONSISTENCY_LOCAL_QUORUM</code>
-</li>
-<li>Updated the cpp-driver to 2.2.0</li>
-</ul>
-
-<h5>
-<a id="v21" class="anchor" href="#v21" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>v2.1</h5>
-
-<ul>
-<li>Add support for Cassandra 2.2 data types <code>tinyint</code> and <code>smallint</code>
-</li>
-<li>Add support for the Cassandra 2.2 <code>date</code> and <code>time</code> data types</li>
-<li>Add support for functions to convert from Unix Epoch time (in seconds) to and from the Cassandra <code>date</code> and <code>time</code> types</li>
-<li>Small improvements</li>
-<li>Refactoring the build dependencies script</li>
-</ul>
-
-<h5>
-<a id="v20" class="anchor" href="#v20" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>v2.0</h5>
-
-<ul>
-<li>Added support for logs from native driver</li>
-<li>Added support for tuples</li>
-<li>Added support for nested collections</li>
-<li>Based on cpp-driver 2.2.0-beta1</li>
-<li>Interfaces changes: <code>bind_prepared_params</code> replaced by <code>bind_prepared_params_by_name</code> and <code>bind_prepared_params_by_index</code>
-</li>
-<li>Add support for <code>async_execute/1</code> and <code>execute/1</code> (should be used when no binding params available)</li>
-<li>Add support for <code>async_execute/3</code> and <code>execute/3</code> (second parameter should be used to specify the binding type - by name or index)</li>
-<li>By default <code>async_execute/2</code> and <code>execute/2</code> are binding the params by index</li>
-</ul>
-
-<h5>
-<a id="v10" class="anchor" href="#v10" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>v1.0</h5>
-
-<ul>
-<li>Initial implementation supporting most of the features available in Datastax cpp-driver 1.0.3</li>
-</ul>
+<p>Changelog is available <a href="https://github.com/silviucpp/erlcass/blob/master/CHANGELOG.md">here</a>.</p>
 
 <h3>
-<a id="getting-starting" class="anchor" href="#getting-starting" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting starting:</h3>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting started:</h3>
 
-<p><em>Usually the rebar script will install for you all dependencies on Cent OS, Ubuntu and Mac OS. So you can skip this section.</em></p>
+<p>The application is compatible with both <code>rebar</code> or <code>rebar3</code>.</p>
 
-<p>This dependecies are required to compile the Datastax c++ driver.
-More details <a href="http://datastax.github.io/cpp-driver/topics/building/">here</a>.</p>
-
-<p>For example:</p>
-
-<p>Centos:</p>
-
-<div class="highlight highlight-source-shell"><pre>sudo yum install automake cmake gcc-c++ git libtool openssl-devel wget
-<span class="pl-c1">pushd</span> /tmp
-wget http://libuv.org/dist/v1.7.5/libuv-v1.7.5.tar.gz
-<span class="pl-c1">pushd</span> libuv-v1.7.5
-tar xzf libuv-v1.7.5.tar.gz
-sh autogen.sh
-./configure
-sudo make install
-<span class="pl-c1">popd</span>
-<span class="pl-c1">popd</span></pre></div>
-
-<p>Also on CentOS you need to add <code>﻿usr/local/lib</code> into <code>ldconfig</code> search path.</p>
-
-<div class="highlight highlight-source-shell"><pre>su -
-﻿nano /etc/ld.so.conf.d/usrlocal.conf
-﻿add inside the file: usr/local/lib
-﻿ldconfig -v</pre></div>
-
-<p>Ubuntu:</p>
-
-<div class="highlight highlight-source-shell"><pre>sudo apt-add-repository ppa:linuxjedi/ppa
-sudo apt-get update
-sudo apt-get install g++ make cmake libuv-dev libssl-dev</pre></div>
-
-<p>Mac OS:</p>
-
-<div class="highlight highlight-source-shell"><pre>brew install libuv cmake openssl
-brew link --force openssl</pre></div>
+<p>In case you receive any error related to compiling of the DataStax driver you can try to run <code>rebar</code> with <code>sudo</code> in order 
+to install all dependencies. Also you can check <a href="https://github.com/silviucpp/erlcass/wiki/Getting-started">wiki section</a> for more details</p>
 
 <h3>
 <a id="data-types" class="anchor" href="#data-types" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Data types</h3>
 
-<p>Here is a correspondence of Cassandra column types with their equivalent Erlang types</p>
-
-<table>
-<thead>
-<tr>
-<th>Cassandra Column Type</th>
-<th>Erlang types</th>
-<th align="center">Examples</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>ascii</td>
-<td>binary or string</td>
-<td align="center">&lt;&lt;"hello"&gt;&gt; or "hello"</td>
-</tr>
-<tr>
-<td>varchar</td>
-<td>binary or string</td>
-<td align="center">&lt;&lt;"hello"&gt;&gt; or "hello"</td>
-</tr>
-<tr>
-<td>text</td>
-<td>binary or string</td>
-<td align="center">&lt;&lt;"hello"&gt;&gt; or "hello"</td>
-</tr>
-<tr>
-<td>bigint</td>
-<td>integer (signed 64-bit)</td>
-<td align="center">9223372036854775807</td>
-</tr>
-<tr>
-<td>timestamp</td>
-<td>integer (signed 64-bit)</td>
-<td align="center">9223372036854775807</td>
-</tr>
-<tr>
-<td>counter</td>
-<td>integer (signed 64-bit)</td>
-<td align="center">9223372036854775807</td>
-</tr>
-<tr>
-<td>time</td>
-<td>integer (signed 64-bit)</td>
-<td align="center">86399999999999</td>
-</tr>
-<tr>
-<td>blob</td>
-<td>binary</td>
-<td align="center">&lt;&gt;</td>
-</tr>
-<tr>
-<td>varint</td>
-<td>binary</td>
-<td align="center">&lt;&lt;"12423423423423423423243432432"&gt;&gt;</td>
-</tr>
-<tr>
-<td>boolean</td>
-<td>
-<code>true</code>, <code>false</code>
-</td>
-<td align="center">true</td>
-</tr>
-<tr>
-<td>decimal</td>
-<td><code>{Unscaled :: binary(), Scale :: integer()}</code></td>
-<td align="center">{&lt;&lt;"1234"&gt;&gt;, 5}</td>
-</tr>
-<tr>
-<td>double</td>
-<td>float (signed 64-bit)</td>
-<td align="center">5.1235131241221e-6</td>
-</tr>
-<tr>
-<td>float</td>
-<td>float (signed 32-bit)</td>
-<td align="center">5.12351e-6</td>
-</tr>
-<tr>
-<td>tinyint</td>
-<td>integer (signed 8-bit)</td>
-<td align="center">127</td>
-</tr>
-<tr>
-<td>smallint</td>
-<td>integer (signed 16-bit)</td>
-<td align="center">32767</td>
-</tr>
-<tr>
-<td>int</td>
-<td>integer (signed 32-bit)</td>
-<td align="center">2147483647</td>
-</tr>
-<tr>
-<td>date</td>
-<td>integer (unsigned 32-bit)</td>
-<td align="center">2147483648</td>
-</tr>
-<tr>
-<td>uuid</td>
-<td>binary</td>
-<td align="center">&lt;&lt;"61c16fb1-44ca-4591-9317-ac96ddbd8694"&gt;&gt;</td>
-</tr>
-<tr>
-<td>varint</td>
-<td>binary</td>
-<td align="center">&lt;&lt;"1928301970128391280192830198049113123"&gt;&gt;</td>
-</tr>
-<tr>
-<td>timeuuid</td>
-<td>binary</td>
-<td align="center">&lt;&lt;"076a46c0-0ad7-11e5-b314-3d7bf89b87a1"&gt;&gt;</td>
-</tr>
-<tr>
-<td>inet</td>
-<td>binary</td>
-<td align="center">&lt;&lt;"127.0.0.1"&gt;&gt;</td>
-</tr>
-<tr>
-<td>tuple</td>
-<td>erlang tuple</td>
-<td align="center">{&lt;&lt;"aaa"&gt;&gt;, 1}</td>
-</tr>
-</tbody>
-</table>
-
-<p>In order to generate a uuid v4 you can use <code>erlcass_uuid:gen_random()</code> for uuid v1 you can use <code>erlcass_uuid:gen_time()</code>.
-For more details please see the section dedicated to uuid's</p>
+<p>In order to see the relation between Cassandra column types and Erlang types please check this <a href="https://github.com/silviucpp/erlcass/wiki/Data-types">wiki section</a></p>
 
 <h3>
 <a id="starting-the-application" class="anchor" href="#starting-the-application" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Starting the application</h3>
@@ -302,7 +80,7 @@ For more details please see the section dedicated to uuid's</p>
 -<span class="pl-k">define</span>(<span class="pl-en">CASS_LOG_DEBUG</span>,<span class="pl-c1">5</span>).
 -<span class="pl-k">define</span>(<span class="pl-en">CASS_LOG_TRACE</span>, <span class="pl-c1">6</span>).</pre></div>
 
-<p>In order to change the log level for the native driver you need to set the <code>log_level</code> environment variable for erlcass into your config file.
+<p>In order to change the log level for the native driver you need to set the <code>log_level</code> environment variable for ErlCass into your config file.
 By default the logs are printed to console. In order to print them into an external log system you can use the <code>set_log_function</code> method.
 The callback should be a function with arity 1 which will receive a record of <code>log_msg</code> type defined as</p>
 
@@ -334,381 +112,50 @@ The callback should be a function with arity 1 which will receive a record of <c
 <h3>
 <a id="setting-the-cluster-options" class="anchor" href="#setting-the-cluster-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setting the cluster options</h3>
 
+<p>The cluster options can be set at runtime using <code>erlcass:set_cluster_options/1</code> method as follow:</p>
+
 <div class="highlight highlight-source-erlang"><pre><span class="pl-c1">ok</span> <span class="pl-k">=</span> <span class="pl-en">erlcass</span>:<span class="pl-en">set_cluster_options</span>([
-            {<span class="pl-c1">contact_points</span>,&lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>172.17.3.129<span class="pl-pds">"</span></span>&gt;&gt;},
-            {<span class="pl-c1">load_balance_dc_aware</span>, {&lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>dc-beta<span class="pl-pds">"</span></span>&gt;&gt;, <span class="pl-c1">0</span>, <span class="pl-c1">false</span>}},
-            {<span class="pl-c1">default_consistency_level</span>, <span class="pl-k">?</span><span class="pl-en">CASS_CONSISTENCY_ONE</span>},
-            {<span class="pl-c1">number_threads_io</span>, <span class="pl-c1">4</span>},
-            {<span class="pl-c1">queue_size_io</span>, <span class="pl-c1">124000</span>},
-            {<span class="pl-c1">core_connections_host</span>, <span class="pl-c1">5</span>},
-            {<span class="pl-c1">max_connections_host</span>, <span class="pl-c1">5</span>},
-            {<span class="pl-c1">tcp_nodelay</span>, <span class="pl-c1">true</span>},
-            {<span class="pl-c1">tcp_keepalive</span>, {<span class="pl-c1">true</span>, <span class="pl-c1">60</span>}},
-            {<span class="pl-c1">pending_requests_high_watermark</span>, <span class="pl-c1">128000</span>}
+    {<span class="pl-c1">contact_points</span>, &lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>172.17.3.129,172.17.3.130,172.17.3.131<span class="pl-pds">"</span></span>&gt;&gt;},
+    {<span class="pl-c1">port</span>, <span class="pl-c1">9042</span>},
+    ...
 ]).</pre></div>
 
-<p>Available options:</p>
+<p>or inside your <code>app.config</code> file:</p>
 
-<h5>
-<a id="contact_points-mandatory" class="anchor" href="#contact_points-mandatory" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>contact_points (Mandatory)</h5>
+<div class="highlight highlight-source-erlang"><pre>{<span class="pl-c1">erlcass</span>, [
+    {<span class="pl-c1">log_level</span>, <span class="pl-c1">3</span>},
+    {<span class="pl-c1">keyspace</span>, &lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>keyspace<span class="pl-pds">"</span></span>&gt;&gt;},
+    {<span class="pl-c1">cluster_options</span>,[
+        {<span class="pl-c1">contact_points</span>, &lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>172.17.3.129,172.17.3.130,172.17.3.131<span class="pl-pds">"</span></span>&gt;&gt;},
+        {<span class="pl-c1">port</span>, <span class="pl-c1">9042</span>},
+        {<span class="pl-c1">load_balance_dc_aware</span>, {&lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>dc-name<span class="pl-pds">"</span></span>&gt;&gt;, <span class="pl-c1">0</span>, <span class="pl-c1">false</span>}},
+        {<span class="pl-c1">latency_aware_routing</span>, <span class="pl-c1">true</span>},
+        {<span class="pl-c1">token_aware_routing</span>, <span class="pl-c1">true</span>},
+        {<span class="pl-c1">number_threads_io</span>, <span class="pl-c1">4</span>},
+        {<span class="pl-c1">queue_size_io</span>, <span class="pl-c1">128000</span>},
+        {<span class="pl-c1">max_connections_host</span>, <span class="pl-c1">5</span>},
+        {<span class="pl-c1">pending_requests_high_watermark</span>, <span class="pl-c1">128000</span>},
+        {<span class="pl-c1">tcp_nodelay</span>, <span class="pl-c1">true</span>},
+        {<span class="pl-c1">tcp_keepalive</span>, {<span class="pl-c1">true</span>, <span class="pl-c1">1800</span>}},
+        {<span class="pl-c1">default_consistency_level</span>, <span class="pl-c1">6</span>}
+    ]}
+]},</pre></div>
 
-<p>Example : {contact_points, &lt;&lt;"172.17.3.129"&gt;&gt;}</p>
-
-<p>Sets/Appends contact points. The first call sets the contact points and any subsequent calls appends additional contact points.
-Passing an empty string will clear the contact points. White space is striped from the contact points.
-Accepted values: &lt;&lt;"127.0.0.1"&gt;&gt; &lt;&lt;"127.0.0.1,127.0.0.2"&gt;&gt;, &lt;&lt;"server1.domain.com"&gt;&gt;</p>
-
-<h5>
-<a id="port" class="anchor" href="#port" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>port</h5>
-
-<p>Example: {port, 9042}</p>
-
-<p>Sets the port.</p>
-
-<p>Default: 9042</p>
-
-<h5>
-<a id="ssl" class="anchor" href="#ssl" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ssl</h5>
-
-<p>Example:</p>
-
-<div class="highlight highlight-source-erlang"><pre>{<span class="pl-c1">ssl</span>, [
-            {<span class="pl-c1">trusted_certs</span>, [&lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>cert1<span class="pl-pds">"</span></span>&gt;&gt;, &lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>cert2<span class="pl-pds">"</span></span>&gt;&gt;]},
-            {<span class="pl-c1">cert</span>, &lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>cert_here<span class="pl-pds">"</span></span>&gt;&gt;},
-            {<span class="pl-c1">private_key</span>, {&lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>private_key_here<span class="pl-pds">"</span></span>&gt;&gt;, &lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>private_key_pwd_here<span class="pl-pds">"</span></span>&gt;&gt;}},
-            {<span class="pl-c1">verify_flags</span>, <span class="pl-k">?</span><span class="pl-en">CASS_SSL_VERIFY_PEER_CERT</span>}
-        ]
-}</pre></div>
-
-<p>Sets the SSL context and enables SSL.</p>
-
-<p>Default: None</p>
-
-<h6>
-<a id="params" class="anchor" href="#params" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Params:</h6>
-
-<div class="highlight highlight-source-erlang"><pre>{<span class="pl-c1">ssl</span>, [
-        {<span class="pl-c1">trusted_certs</span>, <span class="pl-smi">CertsList</span><span class="pl-k">::</span><span class="pl-en">list</span>()},
-        {<span class="pl-c1">cert</span>, <span class="pl-smi">Cert</span><span class="pl-k">::</span><span class="pl-en">binary</span>()},
-        {<span class="pl-c1">private_key</span>, {<span class="pl-smi">PrivateKey</span><span class="pl-k">::</span><span class="pl-en">binary</span>(), <span class="pl-smi">KeyPassword</span><span class="pl-k">::</span><span class="pl-en">binary</span>()}},
-        {<span class="pl-c1">verify_flags</span>, <span class="pl-smi">VerifyFlags</span><span class="pl-k">::</span><span class="pl-en">integer</span>()}
-       ]
-}</pre></div>
+<p>Tips for production environment:</p>
 
 <ul>
-<li>
-<code>trusted_certs</code> : Adds one or more trusted certificate. This is used to verify the peer's certificate.</li>
-<li>
-<code>cert</code> : Set client-side certificate chain. This is used to authenticate the client on the server-side. This should contain the entire Certificate chain starting with the certificate itself.</li>
-<li>
-<code>private_key</code> : Set client-side private key. This is used to authenticate the client on the server-side. PrivateKey is a key PEM formatted key string and KeyPassword is the password used to decrypt key</li>
-<li>
-<code>verify_flags</code> : Sets verification performed on the peer's certificate.</li>
+<li>Use <code>token_aware_routing</code> and <code>latency_aware_routing</code>
+</li>
+<li>Don't use <code>number_threads_io</code> bigger than the number of your cores.</li>
+<li>Use <code>tcp_nodelay</code> and also enable <code>tcp_keepalive</code> </li>
 </ul>
 
-<p>For verify_flags use one of the values defined in <code>erlcass.hrl</code> :</p>
-
-<div class="highlight highlight-source-erlang"><pre>-<span class="pl-k">define</span>(<span class="pl-en">CASS_SSL_VERIFY_NONE</span>, <span class="pl-c1">0</span>).
--<span class="pl-k">define</span>(<span class="pl-en">CASS_SSL_VERIFY_PEER_CERT</span>, <span class="pl-c1">1</span>).
--<span class="pl-k">define</span>(<span class="pl-en">CASS_SSL_VERIFY_PEER_IDENTITY</span>, <span class="pl-c1">2</span>).</pre></div>
-
-<ul>
-<li>
-<code>CASS_SSL_VERIFY_NONE</code> - No verification is performed</li>
-<li>
-<code>CASS_SSL_VERIFY_PEER_CERT</code> - Certificate is present and valid</li>
-<li>
-<code>CASS_SSL_VERIFY_PEER_IDENTITY</code> - IP address matches the certificate's common name or one of its subject alternative names. This implies the certificate is also present.</li>
-</ul>
-
-<p>You can use also a combination like : <code>?CASS_SSL_VERIFY_PEER_CERT bor ?CASS_SSL_VERIFY_PEER_IDENTITY</code></p>
-
-<p>Default: <code>CASS_SSL_VERIFY_PEER_CERT</code></p>
-
-<h5>
-<a id="protocol_version" class="anchor" href="#protocol_version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>protocol_version</h5>
-
-<p>Example: {protocol_version, 2}</p>
-
-<p>Sets the protocol version. This will automatically downgrade to the lowest protocol version supported.</p>
-
-<p>Default: 4</p>
-
-<h5>
-<a id="number_threads_io" class="anchor" href="#number_threads_io" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>number_threads_io</h5>
-
-<p>Example: {number_threads_io, 1}</p>
-
-<p>Sets the number of IO threads. This is the number of threads that will handle query requests.</p>
-
-<p>Default: 1</p>
-
-<h5>
-<a id="queue_size_io" class="anchor" href="#queue_size_io" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>queue_size_io</h5>
-
-<p>Example: {queue_size_io, 8192}</p>
-
-<p>Sets the size of the the fixed size queue that stores pending requests.</p>
-
-<p>Default: 8192</p>
-
-<h5>
-<a id="queue_size_event" class="anchor" href="#queue_size_event" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>queue_size_event</h5>
-
-<p>Example: {queue_size_event, 8192}</p>
-
-<p>Sets the size of the the fixed size queue that stores events.</p>
-
-<p>Default: 8192</p>
-
-<h5>
-<a id="core_connections_host" class="anchor" href="#core_connections_host" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>core_connections_host</h5>
-
-<p>Example: {core_connections_host, 1}</p>
-
-<p>Sets the number of connections made to each server in each IO thread.</p>
-
-<p>Default: 1</p>
-
-<h5>
-<a id="max_connections_host" class="anchor" href="#max_connections_host" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>max_connections_host</h5>
-
-<p>Example: {max_connections_host, 2}</p>
-
-<p>Sets the maximum number of connections made to each server in each IO thread.</p>
-
-<p>Default: 2</p>
-
-<h5>
-<a id="reconnect_wait_time" class="anchor" href="#reconnect_wait_time" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>reconnect_wait_time</h5>
-
-<p>Example: {reconnect_wait_time, 2000}</p>
-
-<p>Sets the amount of time to wait before attempting to reconnect.</p>
-
-<p>Default: 2000 milliseconds</p>
-
-<h5>
-<a id="max_concurrent_creation" class="anchor" href="#max_concurrent_creation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>max_concurrent_creation</h5>
-
-<p>Example: {max_concurrent_creation, 1}</p>
-
-<p>Sets the maximum number of connections that will be created concurrently.
-Connections are created when the current connections are unable to keep up with request throughput.</p>
-
-<p>Default: 1</p>
-
-<h5>
-<a id="max_requests_threshold" class="anchor" href="#max_requests_threshold" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>max_requests_threshold</h5>
-
-<p>Example: {max_requests_threshold, 100}</p>
-
-<p>Sets the threshold for the maximum number of concurrent requests in-flight on a connection before creating a new connection.
-The number of new connections created will not exceed max_connections_host.</p>
-
-<p>Default: 100</p>
-
-<h5>
-<a id="requests_per_flush" class="anchor" href="#requests_per_flush" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>requests_per_flush</h5>
-
-<p>Example: {requests_per_flush, 128}</p>
-
-<p>Sets the maximum number of requests processed by an IO worker per flush.</p>
-
-<p>Default: 128</p>
-
-<h5>
-<a id="write_bytes_high_watermark" class="anchor" href="#write_bytes_high_watermark" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>write_bytes_high_watermark</h5>
-
-<p>Example: {write_bytes_high_watermark, 65536}</p>
-
-<p>Sets the high water mark for the number of bytes outstanding on a connection.
-Disables writes to a connection if the number of bytes queued exceed this value.</p>
-
-<p>Default: 64 KB</p>
-
-<h5>
-<a id="write_bytes_low_watermark" class="anchor" href="#write_bytes_low_watermark" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>write_bytes_low_watermark</h5>
-
-<p>Example: {write_bytes_low_watermark, 32768}</p>
-
-<p>Sets the low water mark for number of bytes outstanding on a connection.
-After exceeding high water mark bytes, writes will only resume once the number of bytes fall below this value.</p>
-
-<p>Default: 32 KB</p>
-
-<h5>
-<a id="pending_requests_high_watermark" class="anchor" href="#pending_requests_high_watermark" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>pending_requests_high_watermark</h5>
-
-<p>Example: {pending_requests_high_watermark, 256}</p>
-
-<p>Sets the high water mark for the number of requests queued waiting for a connection in a connection pool.
-Disables writes to a host on an IO worker if the number of requests queued exceed this value.</p>
-
-<p>Default: 256</p>
-
-<h5>
-<a id="pending_requests_low_watermark" class="anchor" href="#pending_requests_low_watermark" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>pending_requests_low_watermark</h5>
-
-<p>Example: {pending_requests_low_watermark, 128}</p>
-
-<p>Sets the low water mark for the number of requests queued waiting for a connection in a connection pool.
-After exceeding high water mark requests, writes to a host will only resume once the number of requests fall below this value.</p>
-
-<p>Default: 128</p>
-
-<h5>
-<a id="connect_timeout" class="anchor" href="#connect_timeout" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>connect_timeout</h5>
-
-<p>Example: {connect_timeout, 5000}</p>
-
-<p>Sets the timeout for connecting to a node.</p>
-
-<p>Default: 5000 milliseconds</p>
-
-<h5>
-<a id="heartbeat_interval" class="anchor" href="#heartbeat_interval" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>heartbeat_interval</h5>
-
-<p>Example: {heartbeat_interval, 30}</p>
-
-<p>Sets the amount of time between heartbeat messages and controls the amount of time the connection must be idle before sending heartbeat messages.
-This is useful for preventing intermediate network devices from dropping connections.</p>
-
-<p>Default: 30 seconds</p>
-
-<h5>
-<a id="idle_timeout" class="anchor" href="#idle_timeout" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>idle_timeout</h5>
-
-<p>Example: {idle_timeout, 60}</p>
-
-<p>Sets the amount of time a connection is allowed to be without a successful heartbeat response before being terminated and scheduled for reconnection.</p>
-
-<p>Default: 60 seconds</p>
-
-<h5>
-<a id="request_timeout" class="anchor" href="#request_timeout" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>request_timeout</h5>
-
-<p>Example: {request_timeout, 12000}</p>
-
-<p>Sets the timeout for waiting for a response from a node.</p>
-
-<p>Default: 12000 milliseconds</p>
-
-<h5>
-<a id="credentials" class="anchor" href="#credentials" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>credentials</h5>
-
-<p>Example: {credentials, {&lt;&lt;"username"&gt;&gt;, &lt;&lt;"password"&gt;&gt;}}</p>
-
-<p>Sets credentials for plain text authentication.</p>
-
-<h5>
-<a id="load_balance_round_robin" class="anchor" href="#load_balance_round_robin" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>load_balance_round_robin</h5>
-
-<p>Example: {load_balance_round_robin, true}</p>
-
-<p>Configures the cluster to use round-robin load balancing.
-The driver discovers all nodes in a cluster and cycles through them per request. All are considered 'local'.</p>
-
-<h5>
-<a id="load_balance_dc_aware" class="anchor" href="#load_balance_dc_aware" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>load_balance_dc_aware</h5>
-
-<p>Example: {load_balance_dc_aware, {"dc_name", 2, true}}</p>
-
-<p>Configures the cluster to use DC-aware load balancing.
-For each query, all live nodes in a primary 'local' DC are tried first, followed by any node from other DCs.</p>
-
-<h6>
-<a id="note" class="anchor" href="#note" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Note:</h6>
-
-<p>This is the default, and does not need to be called unless switching an existing from another policy or changing settings.
-Without further configuration, a default local_dc is chosen from the first connected contact point, and no remote hosts are considered in query plans.
-If relying on this mechanism, be sure to use only contact points from the local DC.</p>
-
-<h6>
-<a id="params-1" class="anchor" href="#params-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Params:</h6>
-
-<p><em>{load_balance_dc_aware, {LocalDc, UsedHostsPerRemoteDc, AllowRemoteDcsForLocalCl}}</em></p>
-
-<ul>
-<li>LocalDc - The primary data center to try first</li>
-<li>UsedHostsPerRemoteDc - The number of host used in each remote DC if no hosts are available in the local dc</li>
-<li>AllowRemoteDcsForLocalCl - Allows remote hosts to be used if no local dc hosts are available and the consistency level is LOCAL_ONE or LOCAL_QUORUM</li>
-</ul>
-
-<h5>
-<a id="token_aware_routing" class="anchor" href="#token_aware_routing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>token_aware_routing</h5>
-
-<p>Example: {token_aware_routing, true}</p>
-
-<p>Configures the cluster to use token-aware request routing, or not.
-This routing policy composes the base routing policy, routing requests first to replicas on nodes considered 'local' by the base load balancing policy.</p>
-
-<p>Default is true (enabled).</p>
-
-<h4>
-<a id="latency_aware_routing" class="anchor" href="#latency_aware_routing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>latency_aware_routing</h4>
-
-<p>Example:</p>
-
-<ul>
-<li><code>{latency_aware_routing, true}</code></li>
-<li><code>{latency_aware_routing, {true, {2.0, 100, 10000, 100 , 50}}}</code></li>
-</ul>
-
-<p>Configures the cluster to use latency-aware request routing, or not.
-This routing policy is a top-level routing policy.
-It uses the base routing policy to determine locality (dc-aware) and/or placement (token-aware) before considering the latency.</p>
-
-<h6>
-<a id="params-2" class="anchor" href="#params-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Params:</h6>
-
-<p>{Enabled, {ExclusionThreshold, ScaleMs, RetryPeriodMs, UpdateRateMs, MinMeasured}}</p>
-
-<ul>
-<li>Enabled : State of the future</li>
-<li>ExclusionThreshold : Controls how much worse the latency must be compared to the average latency of the best performing node before it penalized.</li>
-<li>ScaleMs Controls the weight given to older latencies when calculating the average latency of a node. A bigger scale will give more weight to older latency measurements.</li>
-<li>RetryPeriodMs -  The amount of time a node is penalized by the policy before being given a second chance when the current average latency exceeds the calculated threshold (ExclusionThreshold * BestAverageLatency).</li>
-<li>UpdateRateMs - The rate at  which the best average latency is recomputed.</li>
-<li>MinMeasured - The minimum number of measurements per-host required to be considered by the policy.</li>
-</ul>
-
-<p>Defaults: {false, {2.0, 100, 10000, 100 , 50}}</p>
-
-<h6>
-<a id="note-in-case-you-use-only-true-false-atom-the-tuning-settings-will-not-change" class="anchor" href="#note-in-case-you-use-only-true-false-atom-the-tuning-settings-will-not-change" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Note: In case you use only true false atom the tuning settings will not change.</h6>
-
-<h5>
-<a id="tcp_nodelay" class="anchor" href="#tcp_nodelay" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>tcp_nodelay</h5>
-
-<p>Example: {tcp_nodelay, false}</p>
-
-<p>Enable/Disable Nagel's algorithm on connections.</p>
-
-<p>Default: true (disabled).</p>
-
-<h5>
-<a id="tcp_keepalive" class="anchor" href="#tcp_keepalive" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>tcp_keepalive</h5>
-
-<p>Example: {tcp_keepalive, {true, 60}}</p>
-
-<p>Enable/Disable TCP keep-alive</p>
-
-<p>Default: cass_false (disabled).</p>
-
-<h5>
-<a id="default_consistency_level" class="anchor" href="#default_consistency_level" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>default_consistency_level</h5>
-
-<p>Example: {default_consistency_level, ?CASS_CONSISTENCY_LOCAL_QUORUM}</p>
-
-<p>Set the default consistency level</p>
-
-<p>Default: ?CASS_CONSISTENCY_LOCAL_QUORUM</p>
+<p>All available options are described in the following <a href="https://github.com/silviucpp/erlcass/wiki/Available-cluster-options">wiki section</a>.</p>
 
 <h3>
 <a id="creating-a-session" class="anchor" href="#creating-a-session" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating a session</h3>
 
-<p><em>Currently this is limited to one session per application. This is a Datastax recommendations as well</em></p>
+<p><em>Currently this is limited to one session per application. This is a DataStax recommendations as well</em></p>
 
 <p>In order to connect the session to a keyspace as well use as option:</p>
 
@@ -728,7 +175,16 @@ It uses the base routing policy to determine locality (dc-aware) and/or placemen
 <div class="highlight highlight-source-erlang"><pre><span class="pl-c1">ok</span> <span class="pl-k">=</span> <span class="pl-en">erlcass</span>:<span class="pl-en">add_prepare_statement</span>(<span class="pl-c1">select_blogpost</span>,
                                    &lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>select * from blogposts where domain = ? LIMIT 1<span class="pl-pds">"</span></span>&gt;&gt;),</pre></div>
 
-<p>In case you want to overwrite the default consistency level for that prepare statement use a tuple for the query argument: <em>{Query, ConsistencyLevelHere}</em></p>
+<p>In case you want to overwrite the default consistency level for that prepare statement use a tuple for the query argument: <code>{Query, ConsistencyLevelHere}</code></p>
+
+<p>Also this is possible using <code>{Query, Options}</code> where options is a proplist with the following options supported:</p>
+
+<ul>
+<li>
+<code>consistency_level</code> - If it's missing the statement will be executed using the default consistency level value.</li>
+<li>
+<code>serial_consistency_level</code> - That consistency can only be either <code>?CASS_CONSISTENCY_SERIAL</code> or <code>?CASS_CONSISTENCY_LOCAL_SERIAL</code> and if not present, it defaults to <code>?CASS_CONSISTENCY_SERIAL</code>. This option will be ignored for anything else that a conditional update/insert.</li>
+</ul>
 
 <p>Example:</p>
 
@@ -736,10 +192,19 @@ It uses the base routing policy to determine locality (dc-aware) and/or placemen
                 <span class="pl-c1">select_blogpost</span>,
                 { &lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>select * from blogposts where domain = ? LIMIT 1<span class="pl-pds">"</span></span>&gt;&gt;, <span class="pl-k">?</span><span class="pl-en">CASS_CONSISTENCY_LOCAL_QUORUM</span> }).</pre></div>
 
+<p>or </p>
+
+<div class="highlight highlight-source-erlang"><pre><span class="pl-c1">ok</span> <span class="pl-k">=</span> <span class="pl-en">erlcass</span>:<span class="pl-en">add_prepare_statement</span>(
+                <span class="pl-c1">insert_blogpost</span>,
+                {&lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>UPDATE blogposts SET author = ? WHERE domain = ? IF EXISTS<span class="pl-pds">"</span></span>&gt;&gt;, [
+                    {<span class="pl-c1">consistency_level</span>, <span class="pl-k">?</span><span class="pl-en">CASS_CONSISTENCY_LOCAL_QUORUM</span>},
+                    {<span class="pl-c1">serial_consistency_level</span>, <span class="pl-k">?</span><span class="pl-en">CASS_CONSISTENCY_LOCAL_SERIAL</span>}
+                ]}).</pre></div>
+
 <h3>
 <a id="run-a-prepared-statement-query" class="anchor" href="#run-a-prepared-statement-query" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Run a prepared statement query</h3>
 
-<p>In case the first parameter for <em>erlcass:execute</em> is an atom then the driver will try to find the associated prepared statement and to run it.
+<p>In case the first parameter for <code>erlcass:execute</code> is an atom then the driver will try to find the associated prepared statement and to run it.
 You can bind the parameters in 2 ways: by name and by index. You can use <code>?BIND_BY_INDEX</code> and <code>?BIND_BY_NAME</code> from execute/3 in order to specify the desired method. By default is binding by index</p>
 
 <p>Example:</p>
@@ -763,10 +228,10 @@ You can bind the parameters in 2 ways: by name and by index. You can use <code>?
 <h3>
 <a id="async-queries-and-blocking-queries" class="anchor" href="#async-queries-and-blocking-queries" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Async queries and blocking queries</h3>
 
-<p>For blocking operations use <em>erlcass:execute</em>, for async execution use : <em>erlcass:async_execute</em>.
+<p>For blocking operations use <code>erlcass:execute</code>, for async execution use : <code>erlcass:async_execute</code>.
 The blocking operation will block the current erlang process (still async into the native code in order to avoid freezing of the VM threads) until will get the result from the cluster.</p>
 
-<p>In case of an async execution the calling process will receive a message of the following form: <em>{execute_statement_result, Tag, Result}</em></p>
+<p>In case of an async execution the calling process will receive a message of the following form: <code>{execute_statement_result, Tag, Result}</code></p>
 
 <p>For example:</p>
 
@@ -780,7 +245,7 @@ The blocking operation will block the current erlang process (still async into t
 <a id="non-prepared-statements-queries" class="anchor" href="#non-prepared-statements-queries" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Non prepared statements queries</h3>
 
 <p>The only downside is that you have to provide metadata about the types of the fields that are bound.
-The datatypes can be found into <em>erlcass.hrl</em> file as follow:</p>
+The data types can be found into <code>erlcass.hrl</code> file as follow:</p>
 
 <div class="highlight highlight-source-erlang"><pre>-<span class="pl-k">define</span>(<span class="pl-en">CASS_TEXT</span>, <span class="pl-c1">text</span>).                         <span class="pl-c">%use for (ascii, text, varchar)</span>
 -<span class="pl-k">define</span>(<span class="pl-en">CASS_TINYINT</span>, <span class="pl-c1">tinyint</span>).                   <span class="pl-c">%use for (tinyint)</span>
@@ -823,8 +288,14 @@ Example with binding by index (requires metadata parsing all the time so it migh
 
 <p>The second one is a list of statements (prepared or normal statements) that needs to be executed in the batch.</p>
 
-<p>The third argument is a list of options currently ony <code>consistency_level</code> is available. If it's missing the batch will be
-executed using the default consistency level value.</p>
+<p>The third argument is a list of options in <code>{Key, Value}</code> format (proplist):</p>
+
+<ul>
+<li>
+<code>consistency_level</code> - If it's missing the batch will be executed using the default consistency level value.</li>
+<li>
+<code>serial_consistency_level</code> - That consistency can only be either <code>?CASS_CONSISTENCY_SERIAL</code> or <code>?CASS_CONSISTENCY_LOCAL_SERIAL</code> and if not present, it defaults to <code>?CASS_CONSISTENCY_SERIAL</code>. This option will be ignored for anything else that a conditional update/insert.</li>
+</ul>
 
 <p>Example:</p>
 
@@ -981,15 +452,13 @@ For example here is how the execute method is implemented:</p>
             {<span class="pl-c1">ok</span>, <span class="pl-smi">Statement</span>} <span class="pl-k">=</span> <span class="pl-en">create_statement</span>(<span class="pl-smi">Identifier</span>, <span class="pl-smi">Params</span>)
     <span class="pl-k">end</span>,
     <span class="pl-en">execute_statement</span>(<span class="pl-smi">Statement</span>).</pre></div>
-        </section>
-
-        <footer>
-          ErlCass is maintained by <a href="https://github.com/silviucpp">silviucpp</a><br>
-          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
-
-        
-      </div>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/silviucpp">silviucpp</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
     </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
   </body>
 </html>
