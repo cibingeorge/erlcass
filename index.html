@@ -45,6 +45,48 @@
 The DataStax driver use it's own threads for managing the requests. Also the responses are received on this threads and sent back to Erlang calling process using <code>enif_send</code> in a async manner. </p>
 
 <h4>
+<a id="benchmark-comparing-with-other-drivers" class="anchor" href="#benchmark-comparing-with-other-drivers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Benchmark comparing with other drivers</h4>
+
+<p>The benchmark (<code>benchmarks/benchmark.erl</code>) is spawning N processes that will run a total of X request using the async api's and then waits to read X responses.
+In <code>benchmarks/test.config</code> you can find the config's for every application. During test in case of unexpected results from driver will log errors in console.</p>
+
+<p>Notes:</p>
+
+<ul>
+<li>
+<code>marina</code> is currently disabled. Seems is not compiling with rebar on OSX because of one of it's deps.</li>
+<li>Test was run on MacBook Pro with OSX El Capitan</li>
+<li>The schema was created using <code>load_test:prepare_load_test_table</code> from <code>benchmarks/load_test.erl</code>. Basically the schema contains all possible 
+data types and the query is based on a primary key (will return the same row all the time which is fine because we test the driver performances and not the server one)</li>
+</ul>
+
+<div class="highlight highlight-source-erlang"><pre><span class="pl-en">benchmark</span>:<span class="pl-en">run</span>(<span class="pl-smi">Module</span>, <span class="pl-smi">NrProcesses</span>, <span class="pl-smi">NrReq</span>).</pre></div>
+
+<p>Used 100 concurrent processes that sends 100k queries. Measured the average time for 3 runs:</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">cassandra driver</th>
+<th align="center">Time to complete (ms)</th>
+<th align="center">Req/sec</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">erlcass v2.5</td>
+<td align="center">2131</td>
+<td align="center">46926</td>
+</tr>
+<tr>
+<td align="center">cqerl v1.0.1</td>
+<td align="center">4544</td>
+<td align="center">22007</td>
+</tr>
+</tbody>
+</table>
+
+<h4>
 <a id="changelog" class="anchor" href="#changelog" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Changelog</h4>
 
 <p>Changelog is available <a href="https://github.com/silviucpp/erlcass/blob/master/CHANGELOG.md">here</a>.</p>
