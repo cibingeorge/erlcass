@@ -48,7 +48,7 @@ The DataStax driver use it's own threads for managing the requests. Also the res
 <a id="benchmark-comparing-with-other-drivers" class="anchor" href="#benchmark-comparing-with-other-drivers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Benchmark comparing with other drivers</h4>
 
 <p>The benchmark (<code>benchmarks/benchmark.erl</code>) is spawning N processes that will run a total of X request using the async api's and then waits to read X responses.
-In <code>benchmarks/test.config</code> you can find the config's for every application. During test in case of unexpected results from driver will log errors in console.</p>
+In <code>benchmarks/benchmark.config</code> you can find the config's for every application. During test in case of unexpected results from driver will log errors in console.</p>
 
 <p>Notes:</p>
 
@@ -110,7 +110,11 @@ to install all dependencies. Also you can check <a href="https://github.com/silv
 <div class="highlight highlight-source-erlang"><pre><span class="pl-en">application</span>:<span class="pl-en">start</span>(<span class="pl-c1">erlcass</span>).</pre></div>
 
 <h3>
-<a id="enable-logs-and-setting-custom-log-handler" class="anchor" href="#enable-logs-and-setting-custom-log-handler" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Enable logs and setting custom log handler</h3>
+<a id="setting-the-log-level" class="anchor" href="#setting-the-log-level" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setting the log level</h3>
+
+<p><code>Erlcass</code> is using <code>lager</code> for logging the errors. Beside the fact that you can set in lager the desired log level, for better performances it's better to set also in <code>erlcass</code>
+the desired level otherwise there will be a lot of resources consumed by lager to format the messages and then drop them. Also the native driver performances can be affected because 
+of the time spent in generating the logs and sending them from C++ into Erlang.  </p>
 
 <p>Available Log levels are:</p>
 
@@ -122,47 +126,14 @@ to install all dependencies. Also you can check <a href="https://github.com/silv
 -<span class="pl-k">define</span>(<span class="pl-en">CASS_LOG_DEBUG</span>,<span class="pl-c1">5</span>).
 -<span class="pl-k">define</span>(<span class="pl-en">CASS_LOG_TRACE</span>, <span class="pl-c1">6</span>).</pre></div>
 
-<p>In order to change the log level for the native driver you need to set the <code>log_level</code> environment variable for ErlCass into your config file.
-By default the logs are printed to console. In order to print them into an external log system you can use the <code>set_log_function</code> method.
-The callback should be a function with arity 1 which will receive a record of <code>log_msg</code> type defined as</p>
+<p>In order to change the log level for the native driver you need to set the <code>log_level</code> environment variable for <code>erlcass</code> into your config file.</p>
 
-<p><code>
--record(log_msg, {ts, severity, severity_str, file, line, function, message}).
-</code></p>
-
-<p>where</p>
-
-<ul>
-<li>
-<code>ts</code> is The millisecond timestamp (since the Epoch) when the message was logged (int)</li>
-<li>
-<code>severity</code> The severity of the log message (int value from 1 to 6)</li>
-<li>
-<code>severity_str</code> The severity of the log message as a string value (binary string)</li>
-<li>
-<code>file</code> The file where the message was logged (binary string)</li>
-<li>
-<code>line</code> The line in the file where the message was logged (int)</li>
-<li>
-<code>function</code> The function where the message was logged (binary string)</li>
-<li>
-<code>message</code> The message (binary string)</li>
-</ul>
-
-<p>or under <code>{_Severity, Msg, Args}</code> format (for all messages generated from Erlang code)</p>
+<p>Example: <code>{log_level, 3}</code>.</p>
 
 <h3>
 <a id="setting-the-cluster-options" class="anchor" href="#setting-the-cluster-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setting the cluster options</h3>
 
-<p>The cluster options can be set at runtime using <code>erlcass:set_cluster_options/1</code> method as follow:</p>
-
-<div class="highlight highlight-source-erlang"><pre><span class="pl-c1">ok</span> <span class="pl-k">=</span> <span class="pl-en">erlcass</span>:<span class="pl-en">set_cluster_options</span>([
-    {<span class="pl-c1">contact_points</span>, &lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>172.17.3.129,172.17.3.130,172.17.3.131<span class="pl-pds">"</span></span>&gt;&gt;},
-    {<span class="pl-c1">port</span>, <span class="pl-c1">9042</span>},
-    ...
-]).</pre></div>
-
-<p>or inside your <code>app.config</code> file:</p>
+<p>The cluster options can be set inside your <code>app.config</code> file under the <code>cluster_options</code> key:</p>
 
 <div class="highlight highlight-source-erlang"><pre>{<span class="pl-c1">erlcass</span>, [
     {<span class="pl-c1">log_level</span>, <span class="pl-c1">3</span>},
@@ -183,7 +154,7 @@ The callback should be a function with arity 1 which will receive a record of <c
     ]}
 ]},</pre></div>
 
-<p>Tips for production environment:</p>
+<p><em>Tips for production environment:</em></p>
 
 <ul>
 <li>Use <code>token_aware_routing</code> and <code>latency_aware_routing</code>
@@ -193,21 +164,6 @@ The callback should be a function with arity 1 which will receive a record of <c
 </ul>
 
 <p>All available options are described in the following <a href="https://github.com/silviucpp/erlcass/wiki/Available-cluster-options">wiki section</a>.</p>
-
-<h3>
-<a id="creating-a-session" class="anchor" href="#creating-a-session" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating a session</h3>
-
-<p><em>Currently this is limited to one session per application. This is a DataStax recommendations as well</em></p>
-
-<p>In order to connect the session to a keyspace as well use as option:</p>
-
-<div class="highlight highlight-source-erlang"><pre> [{<span class="pl-c1">keyspace</span>, &lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>keyspace_name_here<span class="pl-pds">"</span></span>&gt;&gt;}].</pre></div>
-
-<p>In case you don't want to connect the session to any keyspace use as argument an empty list.</p>
-
-<p>Example:</p>
-
-<div class="highlight highlight-source-erlang"><pre><span class="pl-c1">ok</span> <span class="pl-k">=</span> <span class="pl-en">erlcass</span>:<span class="pl-en">create_session</span>([{<span class="pl-c1">keyspace</span>, &lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>stresscql<span class="pl-pds">"</span></span>&gt;&gt;}]).</pre></div>
 
 <h3>
 <a id="add-a-prepare-statement" class="anchor" href="#add-a-prepare-statement" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Add a prepare statement</h3>
