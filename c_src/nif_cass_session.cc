@@ -1,3 +1,4 @@
+#include "nif_cass_cluster.h"
 #include "nif_cass_session.h"
 #include "nif_cass_prepared.h"
 #include "nif_cass_statement.h"
@@ -6,7 +7,6 @@
 #include "constants.h"
 #include "macros.h"
 #include "logger.hpp"
-#include "cassandra.h"
 
 #include <string.h>
 #include <memory>
@@ -200,26 +200,31 @@ ERL_NIF_TERM nif_cass_session_connect(ErlNifEnv* env, int argc, const ERL_NIF_TE
     ErlNifBinary keyspace;
     ErlNifPid pid;
 
-    if(!enif_get_resource(env, argv[0], data->resCassSession, (void**) &enif_session))
+    CassCluster* cluster = get_cass_cluster(env, data->resCassCluster, argv[0]);
+
+    if(cluster == NULL)
         return make_badarg(env);
 
-    if(!enif_get_local_pid(env, argv[1], &pid))
+    if(!enif_get_resource(env, argv[1], data->resCassSession, (void**) &enif_session))
         return make_badarg(env);
 
-    if(argc == 3 && !get_bstring(env, argv[2], &keyspace))
+    if(!enif_get_local_pid(env, argv[2], &pid))
         return make_badarg(env);
 
-    callback_info* callback = callback_info_alloc(env, pid, argv[1]);
+    if(argc == 4 && !get_bstring(env, argv[3], &keyspace))
+        return make_badarg(env);
+
+    callback_info* callback = callback_info_alloc(env, pid, argv[2]);
 
     if(callback == NULL)
         return make_error(env, erlcass::kFailedToCreateCallbackInfoMsg);
 
     CassFuture* future;
 
-    if(argc == 3)
-        future = cass_session_connect_keyspace_n(enif_session->session, data->cluster, BIN_TO_STR(keyspace.data), keyspace.size);
+    if(argc == 4)
+        future = cass_session_connect_keyspace_n(enif_session->session, cluster, BIN_TO_STR(keyspace.data), keyspace.size);
     else
-        future = cass_session_connect(enif_session->session, data->cluster);
+        future = cass_session_connect(enif_session->session, cluster);
 
     CassError error = cass_future_set_callback(future, on_session_connect, callback);
 
@@ -275,7 +280,7 @@ ERL_NIF_TERM nif_cass_session_prepare(ErlNifEnv* env, int argc, const ERL_NIF_TE
     if(!enif_is_identical(ATOMS.atomOk, parse_result))
         return parse_result;
 
-    callback_statement_info* callback = static_cast<callback_statement_info*>(enif_alloc(sizeof(callback_info)));
+    callback_statement_info* callback = static_cast<callback_statement_info*>(enif_alloc(sizeof(callback_statement_info)));
     callback->pid = pid;
     callback->prepared_res = data->resCassPrepared;
     callback->env = enif_alloc_env();
